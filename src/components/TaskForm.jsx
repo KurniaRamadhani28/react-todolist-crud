@@ -12,43 +12,64 @@ const TaskForm = ({ show, handleClose, addTask, editTask, taskToEdit }) => {
     if (taskToEdit) {
       setTask(taskToEdit);
     } else {
-      setTask({ name: "", priority: "Medium", status: "To Do" });
+      setTask({
+        name: "",
+        priority: "Medium",
+        status: "To Do",
+      });
     }
   }, [taskToEdit, show]);
 
   const handleChange = (e) => {
-    setTask({ ...task, [e.target.name]: e.target.value });
+    setTask({
+      ...task,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!task.name.trim()) return;
 
-    taskToEdit ? editTask(task) : addTask(task);
-    setTask({ name: "", priority: "Medium", status: "To Do" });
+    if (!task.name.trim()) {
+      return;
+    }
+
+    if (taskToEdit) {
+      editTask(task);
+    } else {
+      addTask(task);
+    }
+
+    setTask({
+      name: "",
+      priority: "Medium",
+      status: "To Do",
+    });
+
     handleClose();
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose} centered>
       <Modal.Header closeButton>
-        <Modal.Title>{taskToEdit ? "Edit Task" : "Add Task"}</Modal.Title>
+        <Modal.Title>{taskToEdit ? "Edit Task" : "Add New Task"}</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
-        <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3" controlId="taskName">
-            <Form.Label>Task</Form.Label>
+
+      <Form onSubmit={handleSubmit}>
+        <Modal.Body>
+          <Form.Group className="mb-3">
+            <Form.Label>Nama Task</Form.Label>
             <Form.Control
               type="text"
               name="name"
-              placeholder="Masukkan nama kegiatan..."
+              placeholder="Masukkan nama task..."
               value={task.name}
               onChange={handleChange}
               required
             />
           </Form.Group>
 
-          <Form.Group className="mb-3" controlId="taskPriority">
+          <Form.Group className="mb-3">
             <Form.Label>Priority</Form.Label>
             <Form.Select
               name="priority"
@@ -61,7 +82,7 @@ const TaskForm = ({ show, handleClose, addTask, editTask, taskToEdit }) => {
             </Form.Select>
           </Form.Group>
 
-          <Form.Group className="mb-3" controlId="taskStatus">
+          <Form.Group>
             <Form.Label>Status</Form.Label>
             <Form.Select
               name="status"
@@ -73,16 +94,18 @@ const TaskForm = ({ show, handleClose, addTask, editTask, taskToEdit }) => {
               <option value="Done">Done</option>
             </Form.Select>
           </Form.Group>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-        <Button variant="primary" onClick={handleSubmit}>
-          {taskToEdit ? "Update Task" : "Add Task"}
-        </Button>
-      </Modal.Footer>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cancel
+          </Button>
+
+          <Button variant="primary" type="submit">
+            {taskToEdit ? "Update Task" : "Add Task"}
+          </Button>
+        </Modal.Footer>
+      </Form>
     </Modal>
   );
 };
